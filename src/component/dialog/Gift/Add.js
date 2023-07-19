@@ -25,7 +25,7 @@ const GiftPage = (props) => {
   const [coin, setCoin] = useState("");
   const [category, setCategory] = useState("");
   const [images, setImages] = useState([]);
-
+  const [isSelectedCategories, setSelectedCategory] = useState(false);
   const GiftClick = localStorage.getItem("GiftClick");
   const [errors, setError] = useState({
     image: "",
@@ -50,6 +50,7 @@ const GiftPage = (props) => {
     setCategory("");
     setCoin("");
     setImages([]);
+    setSelectedCategory(false)
   }, []);
 
   const onPreviewDrop = (files) => {
@@ -69,8 +70,29 @@ const GiftPage = (props) => {
     }
   };
 
+  const onPreviewDrop1 = (files) => {
+    setError({ ...errors, image: "" });
+    files.map((file) =>
+      Object.assign(file, { preview: URL.createObjectURL(file) })
+    );
+    setImages(images.concat(files));
+  };
+
+  const setCategoryForShowImage = (id) => {
+    const salectedCategory = categories.map((value) => {
+      if (value._id == id) {
+        if(value.name == 'SVGA'){
+          setSelectedCategory(true)
+          return
+        }else{
+          setSelectedCategory(false)
+        }
+      }
+    })
+
+  }
+
   const handleSubmit = (e) => {
-    console.log("e===========", e)
     e.preventDefault();
 
     if (
@@ -105,8 +127,9 @@ const GiftPage = (props) => {
     }
     console.log("formData==========", formData)
 
-    if (!hasPermission) return permissionError();
-    props.createNewGift(formData);
+
+    // if (!hasPermission) return permissionError();
+    // props.createNewGift(formData);
 
     // setTimeout(() => {
     //   GiftClick === null && history.push("/admin/giftCategory/gift");
@@ -213,17 +236,22 @@ const GiftPage = (props) => {
                             value={category}
                             onChange={(e) => {
                               setCategory(e.target.value);
+                              setSelectedCategory(false)
                               if (e.target.value === "Select Category") {
+
                                 return setError({
                                   ...errors,
                                   category: "Please select a Category!",
                                 });
                               } else {
+                                
+                                setCategoryForShowImage(e.target.value)
                                 return setError({
                                   ...errors,
                                   category: "",
                                 });
                               }
+
                             }}
                           >
                             <option value="Select Category" selected>
@@ -254,50 +282,116 @@ const GiftPage = (props) => {
                   </div>
                 </div>
 
-                <div className="row mt-4">
+                <div className="row mt-4 ">
                   <div className="col-lg-2">
                     <label className="form-control-label" for="input-username">
                       Select (Multiple) Image or GIF
                     </label>
-
-                    <>
-                      <ReactDropzone
-                        onDrop={(acceptedFiles) => onPreviewDrop(acceptedFiles)}
-                        accept="image/*, .svga"
-                      >
-                        {({ getRootProps, getInputProps }) => (
-                          <section>
-                            <div {...getRootProps()}>
-                              <input {...getInputProps()} />
-                              <div
-                                style={{
-                                  height: 130,
-                                  width: 130,
-                                  border: "2px dashed gray",
-                                  textAlign: "center",
-                                  marginTop: "10px",
-                                }}
+                    <div className="d-flex">
+                      {console.log("isSelectedCategories======282", isSelectedCategories)}
+                      <>
+                        {
+                          isSelectedCategories ? <>
+                            <div className="me-4">
+                              <ReactDropzone
+                                onDrop={(acceptedFiles) => onPreviewDrop(acceptedFiles)}
+                                accept="image/*, .svga"
                               >
-                                <i
-                                  className="fas fa-plus"
-                                  style={{ paddingTop: 30, fontSize: 70 }}
-                                ></i>
-                              </div>
+                                {({ getRootProps, getInputProps }) => (
+                                  <section>
+                                    <div {...getRootProps()}>
+                                      <input {...getInputProps()} />
+                                      <div
+                                        style={{
+                                          height: 130,
+                                          width: 130,
+                                          border: "2px dashed gray",
+                                          textAlign: "center",
+                                          marginTop: "10px",
+                                        }}
+                                      >
+                                        <i
+                                          className="fas fa-plus"
+                                          style={{ paddingTop: 30, fontSize: 70 }}
+                                        ></i>
+                                      </div>
+                                    </div>
+                                  </section>
+                                )}
+                              </ReactDropzone>
                             </div>
-                          </section>
-                        )}
-                      </ReactDropzone>
+                            <div >
+                              <ReactDropzone
+                                onDrop={(acceptedFiles) => onPreviewDrop1(acceptedFiles)}
+                                accept="image/*, .svga"
+                              >
+                                {({ getRootProps, getInputProps }) => (
+                                  <section>
+                                    <div {...getRootProps()}>
+                                      <input {...getInputProps()} />
+                                      <div
+                                        style={{
+                                          height: 130,
+                                          width: 130,
+                                          border: "2px dashed gray",
+                                          textAlign: "center",
+                                          marginTop: "10px",
+                                        }}
+                                      >
+                                        <i
+                                          className="fas fa-plus"
+                                          style={{ paddingTop: 30, fontSize: 70 }}
+                                        ></i>
+                                      </div>
+                                    </div>
+                                  </section>
+                                )}
+                              </ReactDropzone>
+                            </div>
+                          </> : <>
+                            <div className="me-4">
+                              <ReactDropzone
+                                onDrop={(acceptedFiles) => onPreviewDrop(acceptedFiles)}
+                                accept="image/*, .svga"
+                              >
+                                {({ getRootProps, getInputProps }) => (
+                                  <section>
+                                    <div {...getRootProps()}>
+                                      <input {...getInputProps()} />
+                                      <div
+                                        style={{
+                                          height: 130,
+                                          width: 130,
+                                          border: "2px dashed gray",
+                                          textAlign: "center",
+                                          marginTop: "10px",
+                                        }}
+                                      >
+                                        <i
+                                          className="fas fa-plus"
+                                          style={{ paddingTop: 30, fontSize: 70 }}
+                                        ></i>
+                                      </div>
+                                    </div>
+                                  </section>
+                                )}
+                              </ReactDropzone>
+                            </div>
+                          </>
+                        }
 
-                      {errors.image && (
-                        <div className="ml-2 mt-1">
-                          {errors.image && (
-                            <div className="pl-1 text__left">
-                              <span className="text-red">{errors.image}</span>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </>
+                        {errors.image && (
+                          <div className="ml-2 mt-1 mr-5">
+                            {errors.image && (
+                              <div className="pl-1 text__left">
+                                <span className="text-red">{errors.image}</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    </div>
+
                   </div>
                   <div className="col-lg-10 mt-4">
                     {images.length > 0 && (
