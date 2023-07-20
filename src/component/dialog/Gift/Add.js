@@ -25,9 +25,12 @@ const GiftPage = (props) => {
   const [coin, setCoin] = useState("");
   const [category, setCategory] = useState("");
   const [images, setImages] = useState([]);
+  const [images1, setImages1] = useState([]);
+
   const [isSelectedCategories, setSelectedCategory] = useState(false);
   const GiftClick = localStorage.getItem("GiftClick");
   const [errors, setError] = useState({
+    images1: "",
     image: "",
     coin: "",
     category: "",
@@ -46,10 +49,12 @@ const GiftPage = (props) => {
       image: "",
       coin: "",
       category: "",
+      images1: ""
     });
     setCategory("");
     setCoin("");
     setImages([]);
+    setImages1([]);
     setSelectedCategory(false)
   }, []);
 
@@ -69,22 +74,30 @@ const GiftPage = (props) => {
       setImages(image);
     }
   };
+  const removeImage1 = (file) => {
+    if (file.preview) {
+      const image = images1.filter((ele) => {
+        return ele.preview !== file.preview;
+      });
+      setImages(image);
+    }
+  };
 
   const onPreviewDrop1 = (files) => {
-    setError({ ...errors, image: "" });
+    setError({ ...errors, image1: "" });
     files.map((file) =>
       Object.assign(file, { preview: URL.createObjectURL(file) })
     );
-    setImages(images.concat(files));
+    setImages(images1.concat(files));
   };
 
   const setCategoryForShowImage = (id) => {
     const salectedCategory = categories.map((value) => {
       if (value._id == id) {
-        if(value.name == 'SVGA'){
+        if (value.name == 'SVGA') {
           setSelectedCategory(true)
           return
-        }else{
+        } else {
           setSelectedCategory(false)
         }
       }
@@ -94,36 +107,33 @@ const GiftPage = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (
       !coin ||
       (GiftClick !== null && (category === "Select Category" || !category)) ||
       images.length === 0
     ) {
       const errors = {};
-
       if (!coin) errors.coin = "Coin is Required!";
-
       if (images.length === 0) errors.image = "Please select an Image!";
-
+      if (images1.length === 0) errors.image = "Please select an Image!";
       if (GiftClick !== null && (category === "Select Category" || !category)) {
         errors.category = "Please select a Category!";
       }
-
       return setError({ ...errors });
     }
 
     const coinValid = isNumeric(coin);
-    console.log("coinValid=========", coinValid)
     if (!coinValid) {
       return setError({ ...errors, coin: "Invalid Coin!!" });
     }
     const formData = new FormData();
-
     formData.append("category", category ? category : categoryDetail._id);
     formData.append("coin", coin);
     for (let i = 0; i < images.length; i++) {
       formData.append("imageVideo", images[i]);
+    }
+    for (let i = 0; i < images1.length; i++) {
+      formData.append("imageVideo1", images1[i]);
     }
     console.log("formData==========", formData)
 
@@ -244,7 +254,6 @@ const GiftPage = (props) => {
                                   category: "Please select a Category!",
                                 });
                               } else {
-                                
                                 setCategoryForShowImage(e.target.value)
                                 return setError({
                                   ...errors,
@@ -288,7 +297,6 @@ const GiftPage = (props) => {
                       Select (Multiple) Image or GIF
                     </label>
                     <div className="d-flex">
-                      {console.log("isSelectedCategories======282", isSelectedCategories)}
                       <>
                         {
                           isSelectedCategories ? <>
@@ -348,6 +356,57 @@ const GiftPage = (props) => {
                                 )}
                               </ReactDropzone>
                             </div>
+                            <div className="row ms-3">
+                              <div className="col-lg-10">
+                                {images.length > 0 && (
+                                  <>
+                                    {images.map((file, index) => {
+                                      return (
+                                        file.type?.split("image")[0] === "" && (
+                                          <>
+                                            <img
+                                              height="60px"
+                                              width="60px"
+                                              alt="app"
+                                              src={file.preview}
+                                              style={{
+                                                boxShadow:
+                                                  "0 5px 15px 0 rgb(105 103 103 / 00%)",
+                                                border: "2px solid #fff",
+                                                borderRadius: 10,
+                                                marginTop: 10,
+                                                float: "left",
+                                                objectFit: "contain",
+                                                marginRight: 15,
+                                              }}
+                                            />
+                                            <div
+                                              class="img-container"
+                                              style={{
+                                                display: "inline",
+                                                position: "relative",
+                                                float: "left",
+                                              }}
+                                            >
+                                              <i
+                                                class="fas fa-times-circle text-danger"
+                                                style={{
+                                                  position: "absolute",
+                                                  right: "10px",
+                                                  top: "4px",
+                                                  cursor: "pointer",
+                                                }}
+                                                onClick={() => removeImage(file)}
+                                              ></i>
+                                            </div>
+                                          </>
+                                        )
+                                      );
+                                    })}
+                                  </>
+                                )}
+                              </div>
+                            </div>
                           </> : <>
                             <div className="me-4">
                               <ReactDropzone
@@ -377,6 +436,55 @@ const GiftPage = (props) => {
                                 )}
                               </ReactDropzone>
                             </div>
+                            <div className="col-lg-10 mt-4">
+                              {images.length > 0 && (
+                                <>
+                                  {images.map((file, index) => {
+                                    return (
+                                      file.type?.split("image")[0] === "" && (
+                                        <>
+                                          <img
+                                            height="60px"
+                                            width="60px"
+                                            alt="app"
+                                            src={file.preview}
+                                            style={{
+                                              boxShadow:
+                                                "0 5px 15px 0 rgb(105 103 103 / 00%)",
+                                              border: "2px solid #fff",
+                                              borderRadius: 10,
+                                              marginTop: 10,
+                                              float: "left",
+                                              objectFit: "contain",
+                                              marginRight: 15,
+                                            }}
+                                          />
+                                          <div
+                                            class="img-container"
+                                            style={{
+                                              display: "inline",
+                                              position: "relative",
+                                              float: "left",
+                                            }}
+                                          >
+                                            <i
+                                              class="fas fa-times-circle text-danger"
+                                              style={{
+                                                position: "absolute",
+                                                right: "10px",
+                                                top: "4px",
+                                                cursor: "pointer",
+                                              }}
+                                              onClick={() => removeImage(file)}
+                                            ></i>
+                                          </div>
+                                        </>
+                                      )
+                                    );
+                                  })}
+                                </>
+                              )}
+                            </div>
                           </>
                         }
 
@@ -391,56 +499,6 @@ const GiftPage = (props) => {
                         )}
                       </>
                     </div>
-
-                  </div>
-                  <div className="col-lg-10 mt-4">
-                    {images.length > 0 && (
-                      <>
-                        {images.map((file, index) => {
-                          return (
-                            file.type?.split("image")[0] === "" && (
-                              <>
-                                <img
-                                  height="60px"
-                                  width="60px"
-                                  alt="app"
-                                  src={file.preview}
-                                  style={{
-                                    boxShadow:
-                                      "0 5px 15px 0 rgb(105 103 103 / 00%)",
-                                    border: "2px solid #fff",
-                                    borderRadius: 10,
-                                    marginTop: 10,
-                                    float: "left",
-                                    objectFit: "contain",
-                                    marginRight: 15,
-                                  }}
-                                />
-                                <div
-                                  class="img-container"
-                                  style={{
-                                    display: "inline",
-                                    position: "relative",
-                                    float: "left",
-                                  }}
-                                >
-                                  <i
-                                    class="fas fa-times-circle text-danger"
-                                    style={{
-                                      position: "absolute",
-                                      right: "10px",
-                                      top: "4px",
-                                      cursor: "pointer",
-                                    }}
-                                    onClick={() => removeImage(file)}
-                                  ></i>
-                                </div>
-                              </>
-                            )
-                          );
-                        })}
-                      </>
-                    )}
                   </div>
                 </div>
 
