@@ -79,7 +79,7 @@ const GiftPage = (props) => {
       const image = images1.filter((ele) => {
         return ele.preview !== file.preview;
       });
-      setImages(image);
+      setImages1(image);
     }
   };
 
@@ -88,7 +88,7 @@ const GiftPage = (props) => {
     files.map((file) =>
       Object.assign(file, { preview: URL.createObjectURL(file) })
     );
-    setImages(images1.concat(files));
+    setImages1(images1.concat(files));
   };
 
   const setCategoryForShowImage = (id) => {
@@ -138,12 +138,12 @@ const GiftPage = (props) => {
     console.log("formData==========", formData)
 
 
-    // if (!hasPermission) return permissionError();
-    // props.createNewGift(formData);
+    if (!hasPermission) return permissionError();
+    props.createNewGift(formData);
 
-    // setTimeout(() => {
-    //   GiftClick === null && history.push("/admin/giftCategory/gift");
-    // }, 3000);
+    setTimeout(() => {
+      GiftClick === null && history.push("/admin/giftCategory/gift");
+    }, 3000);
   };
 
   const isNumeric = (value) => {
@@ -357,7 +357,7 @@ const GiftPage = (props) => {
                               </ReactDropzone>
                             </div>
                             <div className="row ms-3">
-                              <div className="col-lg-10">
+                              <div className="col-lg-10 d-flex">
                                 {images.length > 0 && (
                                   <>
                                     {images.map((file, index) => {
@@ -397,6 +397,57 @@ const GiftPage = (props) => {
                                                   cursor: "pointer",
                                                 }}
                                                 onClick={() => removeImage(file)}
+                                              ></i>
+                                            </div>
+                                          </>
+                                        )
+                                      );
+                                    })}
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                            <div className="row ms-3">
+                              <div className="col-lg-10 d-flex">
+                                {images1.length > 0 && (
+                                  <>
+                                    {images1.map((file, index) => {
+                                      return (
+                                        file.type?.split("image")[0] === "" && (
+                                          <>
+                                            <img
+                                              height="60px"
+                                              width="60px"
+                                              alt="app"
+                                              src={file.preview}
+                                              style={{
+                                                boxShadow:
+                                                  "0 5px 15px 0 rgb(105 103 103 / 00%)",
+                                                border: "2px solid #fff",
+                                                borderRadius: 10,
+                                                marginTop: 10,
+                                                float: "left",
+                                                objectFit: "contain",
+                                                marginRight: 15,
+                                              }}
+                                            />
+                                            <div
+                                              class="img-container"
+                                              style={{
+                                                display: "inline",
+                                                position: "relative",
+                                                float: "left",
+                                              }}
+                                            >
+                                              <i
+                                                class="fas fa-times-circle text-danger"
+                                                style={{
+                                                  position: "absolute",
+                                                  right: "10px",
+                                                  top: "4px",
+                                                  cursor: "pointer",
+                                                }}
+                                                onClick={() => removeImage1(file)}
                                               ></i>
                                             </div>
                                           </>
@@ -487,7 +538,6 @@ const GiftPage = (props) => {
                             </div>
                           </>
                         }
-
                         {errors.image && (
                           <div className="ml-2 mt-1 mr-5">
                             {errors.image && (

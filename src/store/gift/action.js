@@ -34,9 +34,9 @@ export const createNewGift = (data) => (dispatch) => {
         dispatch({ type: CLOSE_GIFT_DIALOG });
         dispatch({ type: CREATE_NEW_GIFT, payload: res.data.gift });
 
-        // setTimeout(() => {
-        //   GiftClick !== null && (window.location.href = "/admin/gift");
-        // }, 3000);
+        setTimeout(() => {
+          GiftClick !== null && (window.location.href = "/admin/gift");
+        }, 3000);
       } else {
         Toast("error", res.data.message);
       }
